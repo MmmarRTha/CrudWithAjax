@@ -42,12 +42,11 @@ function insertarBD(datos) {
     const xhr = new XMLHttpRequest();
 
     //abrir la conexion
-    xhr.open('POST', './includes/models/Usuarios.php', true);
+    xhr.open('POST', './includes/models/UsuariosCreate.php', true);
 
     //pasar los datos
     xhr.onload = function () {
         if (this.status === 200) {
-            console.log(JSON.parse( xhr.responseText));
             //leemos la respuesta de php
             const respuesta = JSON.parse( xhr.responseText);
             //insertar un nuevo elemento a la tabla
@@ -111,7 +110,7 @@ function eliminarUsuario(e){
             const xhr = new XMLHttpRequest();
 
             //abrir la conexion
-            xhr.open('GET', `./includes/models/Usuarios.php?id=${id}&accion=borrar`, true);
+            xhr.open('GET', `./includes/models/UsuariosDelete.php?id=${id}&accion=borrar`, true);
             //leer la respuesta
             xhr.onload = function (){
                 if(this.status === 200){
