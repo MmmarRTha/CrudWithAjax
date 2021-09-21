@@ -7,7 +7,7 @@ if(!$id){
     die('no es valido');
 }
 $resultado = getUser($id);
-$usuario = $resultado->fetch();
+$usuario = $resultado->fetch(PDO::FETCH_ASSOC);
 ?>
 
 <div class="contenedor-barra">
@@ -23,12 +23,15 @@ $usuario = $resultado->fetch();
             <div class="field">
                 <label for="name">Nombre:</label>
                 <input type="text" id="name" placeholder="Nombre"
-                value="<?= $usuario->name; ?>"
+                value="<?= $usuario['name'] ?:  "Nombre"; ?>"
                 >
             </div>
             <div class="field send">
-                <input type="hidden" id="accion" value="create">
-                <input type="submit" value="Agregar">
+                <input type="hidden" id="accion" value="update">
+                <?php if(isset($usuario['id'] )) { ?>
+                    <input type="hidden" id="id" value="<?= $usuario['id']; ?>">
+                <?php } ?>
+                <input type="submit" value="Editar">
             </div>
     </form>
 </div>
