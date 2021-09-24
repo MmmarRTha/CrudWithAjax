@@ -6,8 +6,7 @@ $id = filter_var($_GET['id'], FILTER_VALIDATE_INT);
 if(!$id){
     die('no es valido');
 }
-$resultado = getUser($id);
-$usuario = $resultado->fetch(PDO::FETCH_ASSOC);
+$usuario = fetchUser($id);
 ?>
 
 <div class="contenedor-barra">
@@ -28,7 +27,7 @@ $usuario = $resultado->fetch(PDO::FETCH_ASSOC);
             </div>
             <div class="field send">
                 <input type="hidden" id="accion" value="update">
-                <?php if(isset($usuario['id'] )) { ?>
+                <?php if(isset($id)) { ?>
                     <input type="hidden" id="id" value="<?= $usuario['id']; ?>">
                 <?php } ?>
                 <input type="submit" value="Editar">

@@ -1,29 +1,35 @@
 <?php
 
-function getUsuarios()
+function fetchAll()
 {
     include 'Database.php';
     $sql = "SELECT * FROM user";
 
     try{
-       $stmt = $conn->query($sql);
-        return $stmt;
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
     }catch (PDOException $error) {
         echo $error->getMessage();
-        return false;
     }
 }
 
-//obtiene un contacto y toma un id
-function getUser($id)
+function fetchUser($id)
 {
     include 'Database.php';
-    $sql = "SELECT * FROM user WHERE id = $id";
-    try{
-        $stmt = $conn->query($sql);
-        return $stmt;
-    }catch (PDOException $error) {
-        echo $error->getMessage();
-        return false;
+    if(isset($id)){
+        $query = "SELECT * FROM user WHERE id = :id";
+
+        try {
+            $stmt = $conn->prepare($query);
+            $stmt->bindValue(':id', $id);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        }catch (PDOException $error){
+            echo $error->getMessage();
+        }
+    }else{
+        echo "Se requiere un ID de usuario para poder editar.";
+        exit;
     }
 }

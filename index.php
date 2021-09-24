@@ -27,21 +27,19 @@ include 'includes/layout/header.php'; ?>
         <h2 class="h2">Usuarios</h2>
 
         <input type="text" id="buscar" class="buscador sombra" placeholder="Buscar Usuarios...">
-        <p class="total-usuarios"><span>2</span> Usuarios</p>
+        <p class="total-usuarios"><span></span> Usuarios</p>
         <div class="contenedor-tabla">
             <table id="listado-usuarios" class="listado-usuarios">
                 <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Nombre</th>
                     <th>Acciones</th>
                 </tr>
                 </thead>
                 <tbody>
-                    <?php $usuarios = getUsuarios();
+                    <?php $usuarios = fetchAll();
                     foreach($usuarios as $row) { ?>
                 <tr>
-                    <td><?= $row->id; ?></td>
                     <td><?= $row->name; ?></td>
                     <td>
                         <a class="btn-editar btn" href="update.php?id=<?php echo $row->id; ?>"><span class="las la-edit"></span></a>

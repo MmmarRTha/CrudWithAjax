@@ -1,5 +1,6 @@
 const formularioUsuarios = document.querySelector('#usuario'),
-    listadoUsuarios = document.querySelector('#listado-usuarios tbody');
+      listadoUsuarios = document.querySelector('#listado-usuarios tbody'),
+      inputBuscador = document.querySelector('#buscar');
 
 eventListener();
 
@@ -9,6 +10,10 @@ function eventListener()
     formularioUsuarios.addEventListener('submit', leerForm);
     //listener para eliminar el boton
     listadoUsuarios.addEventListener('click', eliminarUsuario);
+    //buscador
+    inputBuscador.addEventListener('input', buscarUsuarios);
+
+    numeroUsuarios();
 }
 
 function leerForm(e)
@@ -33,6 +38,11 @@ function leerForm(e)
             insertarBD(infoUsuario);
         }else{
             //editar el usuario
+            //leer el id
+            const idRegistro = document.querySelector('#id').value;
+            console.log(idRegistro);
+            infoUsuario.append('id', idRegistro);
+            actualizarRegistro(infoUsuario);
         }
     }
 }
@@ -53,7 +63,6 @@ function insertarBD(datos) {
             const nuevoUsuario = document.createElement('tr');
 
             nuevoUsuario.innerHTML = `
-            <td>${respuesta.data.id}</td>
             <td>${respuesta.data.name.name}</td>
             `;
 
@@ -90,9 +99,37 @@ function insertarBD(datos) {
             //mostrar notificacion
             mostrarNotificacion('Usuario creado correctamente', 'correcto');
 
+            //actualizar numero
+            numeroUsuarios();
+
         }
     }
     //enviar los datos
+    xhr.send(datos);
+}
+
+function actualizarRegistro(datos){
+    //crear el objeto
+    const xhr = new XMLHttpRequest();
+    //abrir la conexion
+    xhr.open('POST', './includes/models/UsuariosUpdate.php', true);
+    //leer la respuesta
+    xhr.onload = function () {
+        if(this.status === 200) {
+            const respuesta = JSON.parse(xhr.responseText);
+            //console.log(respuesta);
+            if(respuesta.respuesta === 'correcto'){
+                mostrarNotificacion('Usuario editado correctamente', 'correcto');
+            }else {
+                mostrarNotificacion('Hubo un error', 'error');
+            }
+            //despues de 4 seg redirecciona
+            setTimeout(() => {
+                window.location.href = 'index.php';
+            }, 4000);
+        }
+    }
+    //enviar la petidion
     xhr.send(datos);
 }
 
@@ -101,14 +138,12 @@ function eliminarUsuario(e){
     if(e.target.parentElement.classList.contains('btn-borrar')){
         //tomamos el ID
         const id = e.target.parentElement.getAttribute('data-id');
-
         //preguntar al usuario
         const respuesta = confirm('Estas seguro (a) que deseas eliminar el usuario?');
         if(respuesta){
             //llamado con ajax
             //crear el objeto
             const xhr = new XMLHttpRequest();
-
             //abrir la conexion
             xhr.open('GET', `./includes/models/UsuariosDelete.php?id=${id}&accion=borrar`, true);
             //leer la respuesta
@@ -120,6 +155,7 @@ function eliminarUsuario(e){
                         e.target.parentElement.parentElement.parentElement.remove();
                         //mostrar notificacion correcto
                         mostrarNotificacion('Usuario eliminado', 'correcto');
+                        numeroUsuarios();
                     }else {
                         //mostrar notificacion error
                         mostrarNotificacion('Hubo un error!', 'error');
@@ -151,4 +187,33 @@ function mostrarNotificacion(mensaje, clase) {
             }, 500);
         }, 3000);
     }, 100);
+}
+
+//busca registros
+function buscarUsuarios(e) {
+    const expresion = new RegExp(e.target.value, "i"),
+          registros = document.querySelectorAll('tbody tr');
+
+    registros.forEach(registro => {
+        registro.style.display = 'none';
+        if(registro.childNodes[1].textContent.replace(/\s/g, " ").search(expresion) != -1){
+            registro.style.display = 'table-row';
+        }
+        numeroUsuarios();
+    })
+}
+
+function numeroUsuarios(){
+    const totalUsuarios = document.querySelectorAll('tbody tr');
+    contenedorNumero = document.querySelector('.total-usuarios span')
+    let total = 0;
+    totalUsuarios.forEach(usuario => {
+        if(usuario.style.display === '' || usuario.style.display === 'table-row'){
+            total++
+        }
+    })
+
+    console.log(total);
+    contenedorNumero.textContent = total;
+
 }
