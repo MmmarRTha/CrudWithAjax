@@ -98,10 +98,8 @@ function insertarBD(datos) {
             document.querySelector('form').reset();
             //mostrar notificacion
             mostrarNotificacion('Usuario creado correctamente', 'correcto');
-
             //actualizar numero
             numeroUsuarios();
-
         }
     }
     //enviar los datos

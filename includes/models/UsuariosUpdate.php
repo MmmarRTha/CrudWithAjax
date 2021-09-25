@@ -21,9 +21,9 @@ if($_POST['accion'] == 'update') {
         ];
     }catch (PDOException $error){
         echo $error->getMessage();
-        $respuesta_borrar = [
+        $respuesta_editar = [
             'error' => $error->getMessage()
         ];
     }
-
+    echo json_encode($respuesta_editar);
 }
